@@ -1,17 +1,38 @@
-# This is a sample Python script.
+import os
+import shutil
+import json
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+
+class Config:
+    def __int__(self, configfile):
+        self.ConfigFile = configfile
+        self.Options = dict()
+        self.load()
+
+    def load(self):
+        try:
+            with open(self.ConfigFile) as ofile:
+                config = json.load(ofile)
+            self.Options = config['Options']
+        except FileNotFoundError:
+            self.dump()
+
+    def dump(self):
+        pass
 
 
-def print_lowdisk_status(name):
+def print_lowdisk_status():
     # Use a breakpoint in the code line below to debug your script.
-    pass
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+    ds = shutil.disk_usage('/')
+    # dsf =
+    print(format(ds.free, 'Free space on disk is {1}'))
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_lowdisk_status('PyCharm')
+    ConfigDir = os.path.join(os.environ['HOME'], '.lowdiskwarn')
+    ConfigFile = os.path.join(ConfigDir, 'config.json')
+    Config = Config(ConfigFile)
+    print_lowdisk_status()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
