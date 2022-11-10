@@ -1,38 +1,43 @@
-import os
+# import os
 import shutil
-import json
+import argparse
+from math import log
+from math import floor
+from math import ceil
 
 
-class Config:
-    def __int__(self, configfile):
-        self.ConfigFile = configfile
-        self.Options = dict()
-        self.load()
+def diskspace(size):
+    prefixes = [
+        'PiB',
+        'EiB',
+        'TiB',
+        'GiB',
+        'MiB',
+        'kiB',
+        'B',
+    ]
+    prefixes=prefixes[-1::-1]
+    pps = int(floor(log(size, 1024)))
+    dss = size / 1024**pps
+    prefix = prefixes[pps]
+    return '{0:0.2f} {1}'.format(dss, prefix)
 
-    def load(self):
-        try:
-            with open(self.ConfigFile) as ofile:
-                config = json.load(ofile)
-            self.Options = config['Options']
-        except FileNotFoundError:
-            self.dump()
 
-    def dump(self):
-        pass
-
-
-def print_lowdisk_status():
+def print_lowdisk_status(verbose=False, minimal=400*1024**2):
     # Use a breakpoint in the code line below to debug your script.
     ds = shutil.disk_usage('/')
-    # dsf =
-    print(format(ds.free, 'Free space on disk is {1}'))
+    dsf = diskspace(ds.free)
+    if verbose is True or minimal < ds.free:
+        print('Free space on disk is {0}'.format(dsf))
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    ConfigDir = os.path.join(os.environ['HOME'], '.lowdiskwarn')
-    ConfigFile = os.path.join(ConfigDir, 'config.json')
-    Config = Config(ConfigFile)
-    print_lowdisk_status()
+    description = 'Low disk space alerting service for MOTD'
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('-v', dest='verbose', default=False, action='store_true', help='Verbose true')
+    args = parser.parse_args()
+    verbose = args.verbose
+    print_lowdisk_status(verbose)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
