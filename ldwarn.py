@@ -3,7 +3,7 @@ import shutil
 import argparse
 from math import log
 from math import floor
-# from math import ceil
+DefaultLowSpaceSize = 400*1024**2
 
 
 def diskspace(size):
@@ -27,15 +27,13 @@ def diskspace(size):
     return '{0:0.2f} {1}'.format(dss, prefix)
 
 
-def print_lowdisk_status(verbose=False, minimal=400*1024**2):
-    # Use a breakpoint in the code line below to debug your script.
+def print_lowdisk_status(verbose=False, minimal=DefaultLowSpaceSize):
     ds = shutil.disk_usage('/')
     dsf = diskspace(ds.free)
     if verbose is True or minimal > ds.free:
         print('Free space on disk is {0}'.format(dsf))
 
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     description = 'Low disk space alerting service for MOTD'
     parser = argparse.ArgumentParser(description=description)
@@ -47,11 +45,8 @@ if __name__ == '__main__':
         type=int,
         help='Minimum space for alert',
         nargs=1,
-        default=400*1024**2
+        default=DefaultLowSpaceSize
     )
     args = parser.parse_args()
-    # print(args)
     verboseout = args.verbose
     print_lowdisk_status(verboseout, args.size[0])
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
