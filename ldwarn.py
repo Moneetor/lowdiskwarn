@@ -1,8 +1,10 @@
-# import os
+#!/usr/bin/env python3
+
 import shutil
 import argparse
 from math import log
 from math import floor
+
 DefaultLowSpaceSize = 400*1024**2
 
 
