@@ -51,4 +51,7 @@ if __name__ == '__main__':
     )
     args = parser.parse_args()
     verboseout = args.verbose
+    if isinstance(args.size, int):
+        print_lowdisk_status(verboseout, args.size)
+        exit(0)
     print_lowdisk_status(verboseout, args.size[0])
